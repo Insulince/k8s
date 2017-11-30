@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: k8s-deployment
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: k8s
+        version: v0.0.1
+    spec:
+      containers:
+      - name: k8s-container
+        image: docker.local:5000/k8s:v0.0.1
+        ports:
+        - containerPort: 80

@@ -1,27 +1,19 @@
 # K8s
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.0.
+### To properly set up minikube:
+First things first, you will need to fetch your machines private IP. This is not localhost, and this is not the ip you would find by googling it. It is what identifies your machine to your local network. This IP will be denoted throughout this document as `~machine ip~`
 
-## Development server
+- `minikube start --insecure-registry="docker.local:5000"` starts the VM (and signals to docker that "docker.local:5000" is the address of an insecure docker registry).
+- `minikube stop` stops the VM.
+- `minikube delete` completely deletes the VM.
+- `minikube ssh` sends you into a shell in the VM.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Once you have done a `minkube start` you will need to `minikube ssh` into the vm and then do:
+- `sudo chmod 666 /etc/hosts` (makes the hosts file writable for you)
+- `sudo vi /etc/hosts` (opens the hosts file for writing)
+- add to the end of the file:
+  - `~machine ip~ docker.local` (adds an entry that aliases the term "docker.local" to be ~machine ip~)
 
-## Code scaffolding
+If all was done successfully, you should now have a running instance of kubernetes inside the minikube VM which is looking at "docker.local:5000" for a source of images (the registry), and has the address "docker.local:5000" listed as an insecure registry, and has the term "docker.local" aliased with ~machine ip~.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Simply populate your local registry (on your machine, not the VM) with your images, refer to them in your YAML files as being located at "docker.local:5000/image-name:image-version", and execure your kubectl commands. All should be well.
