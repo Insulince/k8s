@@ -45,12 +45,13 @@ You need to install `minikube`, I believe this can be done through brew, but if 
 
 I am not sure if the command line `kubectl` comes with `minikube`, but you will need to have this tool in addition to `minikube`. It is how you interact with kubernetes via command line.
 
+Some commands:
 - `minikube start --insecure-registry="docker.local:5000"` starts the VM (and signals to docker that `docker.local:5000` is the address of an insecure docker registry).
 - `minikube stop` stops the VM.
 - `minikube delete` completely deletes the VM.
 - `minikube ssh` sends you into a shell in the VM.
 
-Once you have done a `minkube start` you will need to `minikube ssh` into the vm and then do:
+First, do the start command, then you will need to do the ssh command to get into the vm and then do:
 - `sudo chmod 666 /etc/hosts` (makes the hosts file writable for you)
 - `sudo vi /etc/hosts` (opens the hosts file for writing)
 - add to the end of the file:
@@ -61,9 +62,19 @@ If all was done successfully, you should now have a running instance of kubernet
 
 Simply populate your local registry (on your machine, not the VM) with your images, refer to them in your YAML files as being located at "`docker.local:5000/~name~:~version~`", and execute your `kubectl` commands. All should be well.
 
+You can view the more user-friendly kuberentes ui by doing:
+
+`minikube dashboard`
+
 ### Kubectl commands
 To create the deployment (don't do this until everything before this is set up):
 - `kubectl create -f deployment.yaml`
 
 To create the service for the pods that created:
 - `kubectl create -f service.yaml`
+
+Once these two things are running, you can access the project at
+
+`http://~host~:30001`
+
+Where `~host~` is the host you use to access the kubernetes dashboard when doing `minikube dashboard` (not sure if this ever changes, but it is `192.168.99.100` for me. The 30001 is defined in the service YAML).
